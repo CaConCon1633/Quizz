@@ -14,7 +14,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.GsonBuilder
 import com.willow.quiz.Adapters.ChoiceAdapter
 import com.willow.quiz.Data.SharedPrefManager
 import com.willow.quiz.Models.Exam
@@ -129,17 +128,6 @@ class CreateExamActivity : AppCompatActivity() {
 
     }
 
-    fun convertQuestionsToRequiredFormat(questions: List<Exam.Question>): List<Map<String, Any?>> {
-        return questions.map { question ->
-            val answersList = question.answers?.map { mapOf("answer" to it?.answer.toString()) }
-            mapOf(
-                "question" to question.question,
-                "correct" to question.correct,
-                "answers" to answersList
-            )
-        }
-    }
-
     private fun configExam() {
 
         updateStatus(false)
@@ -191,7 +179,7 @@ class CreateExamActivity : AppCompatActivity() {
             })
     }
 
-    fun updateExam(examId: String){
+    private fun updateExam(examId: String){
         var userAnswers = mutableListOf<String>()
         db = Questions(this)
         db.getAllQuestions()
