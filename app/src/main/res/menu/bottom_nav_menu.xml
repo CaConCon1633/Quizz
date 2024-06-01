@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/home_icon"
+        android:title="Home"
+        android:enabled="true"
+        app:cnb_iconColor="@color/white"/>
+    <item
+        android:id="@+id/about"
+        android:icon="@drawable/about_icon"
+        android:title="About"
+        android:enabled="true"
+        app:cnb_iconColor="@color/white"/>
+    <item
+        android:id="@+id/me"
+        android:icon="@drawable/me_icon"
+        android:title="Me"
+        android:enabled="true"
+        app:cnb_iconColor="@color/white"/>
+</menu>

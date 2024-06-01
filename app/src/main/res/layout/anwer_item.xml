@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="10dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_margin="3dp"
+    app:cardElevation="3dp"
+    app:contentPadding="1dp"
+    app:cardBackgroundColor="#f9f9f8">
+
+    <androidx.appcompat.widget.AppCompatRadioButton
+        android:id="@+id/txtAnwer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="abc"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:buttonTint="@color/blue_pastel"/>
+
+</androidx.cardview.widget.CardView>
