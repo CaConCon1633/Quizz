@@ -2,25 +2,42 @@ package com.willow.quiz
 
 import Questions
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.Paint
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.view.Window
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.MultiFormatWriter
+import com.google.zxing.common.BitMatrix
 import com.willow.quiz.Adapters.ChoiceAdapter
 import com.willow.quiz.Data.SharedPrefManager
+import com.willow.quiz.Models.ErrorResponse
 import com.willow.quiz.Models.Exam
 import com.willow.quiz.Models.UpdateExam
 import com.willow.quiz.Sever.ApiClient
 import com.willow.quiz.Sever.ApiSevices
 import com.willow.quiz.databinding.ActivityCreateExamBinding
+import com.willow.quiz.databinding.InforExamLayoutBinding
+import com.willow.quiz.databinding.QrCodeLayoutBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -60,6 +77,7 @@ class CreateExamActivity : AppCompatActivity() {
 
 
         if (examId == "null") {
+            binding.progressBar.visibility = View.VISIBLE
             ApiClient.getRetrofitInstance().create(ApiSevices::class.java)
                 .postCreate("Bearer $token")
                 .enqueue(object : Callback<Exam> {
@@ -83,10 +101,13 @@ class CreateExamActivity : AppCompatActivity() {
                 })
         }else{
             getExamId(examId, token.toString())
+
         }
 
 
+
         updateExam()
+
 
         binding.saveButton.setOnClickListener {
 
@@ -110,17 +131,20 @@ class CreateExamActivity : AppCompatActivity() {
                             Toast.makeText(this@CreateExamActivity, "Update successful.", Toast.LENGTH_SHORT).show()
                             if (p1.body()?.shortId != null){
                                 binding.codeExam.text = p1.body()?.shortId.toString()
+                                binding.btnQrCode.visibility = View.VISIBLE
                             }else{
                                 binding.codeExam.text = "CODE EXAM"
+                                binding.btnQrCode.visibility = View.GONE
                             }
                             binding.createExam.visibility = View.GONE
                             binding.configExam.visibility = View.VISIBLE
+
                         }else{
-                            Toast.makeText(this@CreateExamActivity, "Update failed.", Toast.LENGTH_SHORT).show()
+                            val errorResponse = Gson().fromJson(p1.errorBody()?.string(), ErrorResponse::class.java)
+                            Toast.makeText(this@CreateExamActivity, errorResponse.message, Toast.LENGTH_SHORT).show()
                         }
 
                     }
-
                     override fun onFailure(p0: Call<Exam>, p1: Throwable) {
                         Log.e(TAG, "onFailure: $p1")
                         Toast.makeText(this@CreateExamActivity, "An error occurred", Toast.LENGTH_SHORT)
@@ -128,6 +152,31 @@ class CreateExamActivity : AppCompatActivity() {
                     }
                 })
 
+        }
+
+
+        binding.btnQrCode.setOnClickListener {
+            val builder = Dialog(this@CreateExamActivity, android.R.style.Theme_DeviceDefault_NoActionBar_Fullscreen )
+            builder.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            val binding: QrCodeLayoutBinding = QrCodeLayoutBinding.inflate(layoutInflater)
+            builder.setContentView(binding.root)
+
+            val codeExam = findViewById<TextView>(R.id.codeExam)
+            val shortId = codeExam.text.toString()
+            val qrCode = generateQRCode("https://sos.kokoropie.site/exam/$shortId/short")
+
+            binding.qrCode.setImageBitmap(qrCode)
+
+            binding.cancel.setOnClickListener {
+                builder.dismiss()
+            }
+
+            binding.saveQr.setOnClickListener {
+                saveImageToGallery(generateQRCode("https://sos.kokoropie.site/exam/$shortId/short"), this)
+                Toast.makeText(this, "Saved successful.", Toast.LENGTH_SHORT).show()
+            }
+
+            builder.show()
         }
 
     }
@@ -175,6 +224,9 @@ class CreateExamActivity : AppCompatActivity() {
                             binding.codeExam.setOnClickListener {
                                 copyTextToClipboard(binding.codeExam.text.toString())
                             }
+                            binding.btnQrCode.visibility = View.VISIBLE
+                        }else{
+                            binding.btnQrCode.visibility = View.GONE
                         }
 
                         val questions: List<Exam.Question> = data?.questions as List<Exam.Question>
@@ -196,16 +248,13 @@ class CreateExamActivity : AppCompatActivity() {
     private fun updateExam(){
 
         db = Questions(this)
-        db.getAllQuestions()
         var id = db.getFirstQuestionId()
-
-
-        var userAnswers = db.getAnswersForQuestion(1).toMutableList()
-        var correct = db.getCorrectAnswerForQuestion(1)
-        if (db.getQuestionById(1) == null){
+        var userAnswers = db.getAnswersForQuestion(id).toMutableList()
+        var correct = db.getCorrectAnswerForQuestion(id)
+        if (db.getQuestionById(id) == null){
             binding.txtQuestion.setText("")
         }else{
-            binding.txtQuestion.setText(db.getQuestionById(1).toString())
+            binding.txtQuestion.setText(db.getQuestionById(id).toString())
         }
 
         choiceAdapter = ChoiceAdapter(userAnswers,correct , this)
@@ -260,6 +309,7 @@ class CreateExamActivity : AppCompatActivity() {
             if (binding.txtQuestion.text.toString() == "null" ||binding.txtQuestion.text == null ){
                 userAnswers.clear()
                 correct = -1
+                id++
                 binding.txtQuestion.setText("")
 
                 choiceAdapter = ChoiceAdapter(userAnswers,correct , this)
@@ -277,13 +327,57 @@ class CreateExamActivity : AppCompatActivity() {
                 val question = Exam.Question(answers, correct, txtQuestion)
 
                 db.addQuestion(question)
-
+                id++
                 binding.txtQuestion.setText("")
                 userAnswers.clear()
                 choiceAdapter.refreshData(userAnswers)
             }
         }
 
+        binding.deleteQuestion.setOnClickListener {
+            db.deleteQuestionById(id)
+            userAnswers.clear()
+            correct = -1
+            binding.txtQuestion.setText("")
+
+            choiceAdapter = ChoiceAdapter(userAnswers,correct , this)
+            binding.recyclerView.layoutManager =
+                LinearLayoutManager(this)
+            binding.recyclerView.adapter = choiceAdapter
+        }
+
+    }
+
+    private fun generateQRCode(text: String): Bitmap {
+        val width = 500
+        val height = 500
+        val bitMatrix: BitMatrix = MultiFormatWriter().encode(text, BarcodeFormat.QR_CODE, width, height)
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
+
+        for (x in 0 until width) {
+            for (y in 0 until height) {
+                bitmap.setPixel(x, y, if (bitMatrix.get(x, y)) android.graphics.Color.BLACK else android.graphics.Color.WHITE)
+            }
+        }
+
+        return bitmap
+    }
+    fun saveImageToGallery(bitmap: Bitmap, context: Context) {
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, "MyImage_${System.currentTimeMillis()}.jpg")
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+            put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+        }
+
+        val uri = context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+        uri?.let {
+            context.contentResolver.openOutputStream(it).use { outputStream ->
+                if (outputStream != null) {
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                }
+            }
+        }
     }
 
     private fun updateUI(context: Context, targetActivity: Class<*>) {
@@ -305,5 +399,11 @@ class CreateExamActivity : AppCompatActivity() {
         val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clipData = ClipData.newPlainText("text", text)
         clipboardManager.setPrimaryClip(clipData)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        updateUI(this, ExamsActivity::class.java)
+        db.deleteAllDataFromTable()
     }
 }

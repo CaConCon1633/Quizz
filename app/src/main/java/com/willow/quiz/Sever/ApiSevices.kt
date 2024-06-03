@@ -1,6 +1,7 @@
 package com.willow.quiz.Sever
 
 import com.willow.quiz.Models.Answers
+import com.willow.quiz.Models.Dashboard
 import com.willow.quiz.Models.Exam
 import com.willow.quiz.Models.JoinExam
 import com.willow.quiz.Models.LoginResponse
@@ -136,4 +137,13 @@ interface ApiSevices {
         @Path ("exam_id") examId: String,
         @Header("Authorization") token: String
     ):Call<Message>
+
+    @Headers(
+        "Accept: application/vnd.github.v3.full+json",
+        "User-Agent: Retrofit-Sample-App"
+    )
+    @GET("exams/dashboard")
+    fun getDashBoard(
+        @Header("Authorization") token: String
+    ):Call<Dashboard>
 }

@@ -61,8 +61,6 @@ class LoginActivity : AppCompatActivity() {
             }
             if (isValidEmail(email)){
                 login(email, password)
-                showProgressBar()
-                hideProgressBar()
             }else{
                 binding.emailLogIn.error = "Invalid email format"
                 return@setOnClickListener
@@ -79,14 +77,14 @@ class LoginActivity : AppCompatActivity() {
 
     private fun login(email: String, password: String) {
         val userPrefs = UserPreferences(this)
-        showProgressBar()
+        binding.progressbarLogin.visibility = View.VISIBLE
         ApiClient.getRetrofitInstance().create(ApiSevices::class.java).login(email, password)
             .enqueue(object : Callback<LoginResponse> {
                 override fun onResponse(
                     call: Call<LoginResponse>, response: Response<LoginResponse>
                 ) {
                     if (response.isSuccessful) {
-                        hideProgressBar()
+                        binding.progressbarLogin.visibility = View.GONE
                         val data = response.body()
 
                         if (data?.token == null) {
@@ -120,7 +118,7 @@ class LoginActivity : AppCompatActivity() {
 
 
                     } else {
-                        hideProgressBar()
+                        binding.progressbarLogin.visibility = View.GONE
                         customToast(this@LoginActivity,
                             "Login failed!",
                             Color.parseColor("#FDD2B5"),
@@ -131,7 +129,7 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                    hideProgressBar()
+                    binding.progressbarLogin.visibility = View.GONE
                     Toast.makeText(this@LoginActivity, t.message, Toast.LENGTH_LONG).show()
                     Log.e(TAG, "onFailure: ${t.message}")
                 }
@@ -160,15 +158,6 @@ class LoginActivity : AppCompatActivity() {
         textView.text = spannableBuilder
     }
 
-    private fun showProgressBar() {
-        binding.login.visibility = View.GONE
-        binding.progressbarLogin.visibility = View.VISIBLE
-    }
-
-    private fun hideProgressBar() {
-        binding.login.visibility = View.VISIBLE
-        binding.progressbarLogin.visibility = View.GONE
-    }
 
     private fun updateUI(context: Context, targetActivity: Class<*>) {
         val intent = Intent(context, targetActivity)

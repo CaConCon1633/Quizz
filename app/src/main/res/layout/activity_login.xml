@@ -6,8 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
+    android:elevation="10dp"
     tools:context=".LoginActivity"
-    android:elevation="10dp">
+    tools:visibility="visible">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/login"
@@ -68,8 +69,8 @@
                 android:id="@+id/etpasswordLogin"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:textColor="@color/black"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:textColor="@color/black" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button

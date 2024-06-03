@@ -8,7 +8,6 @@
     android:background="@drawable/backgroud_home"
     tools:context=".ProfileActivity">
 
-
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyle"
@@ -108,37 +107,87 @@
                             android:layout_height="match_parent"
                             android:orientation="vertical">
 
-                            <EditText
-                                android:id="@+id/title"
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="50dp"
                                 android:background="@drawable/edit_join"
-                                android:ems="10"
-                                android:hint="Title: "
-                                android:inputType="text"
-                                android:paddingLeft="4dp" />
+                                android:orientation="horizontal">
 
-                            <EditText
-                                android:id="@+id/decription"
-                                android:layout_width="match_parent"
-                                android:layout_height="133dp"
-                                android:background="@drawable/edit_join"
-                                android:ems="10"
-                                android:gravity="top"
-                                android:hint="Description: "
-                                android:inputType="textMultiLine"
-                                android:paddingLeft="4dp" />
+                                <TextView
+                                    android:id="@+id/textView3"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_margin="2dp"
+                                    android:layout_weight="0"
+                                    android:gravity="center_vertical"
+                                    android:paddingLeft="4dp"
+                                    android:text="Title: "
+                                    android:textColor="@color/black"
+                                    android:textSize="18sp" />
 
-                            <EditText
-                                android:id="@+id/duration"
+                                <EditText
+                                    android:id="@+id/title"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1" />
+                            </LinearLayout>
+
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="50dp"
                                 android:background="@drawable/edit_join"
-                                android:ems="10"
-                                android:hint="Duration (second): "
-                                android:inputType="time"
-                                android:paddingLeft="4dp"
-                                android:textSize="18sp" />
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/textView4"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_margin="2dp"
+                                    android:layout_weight="0"
+                                    android:gravity="center_vertical"
+                                    android:paddingLeft="4dp"
+                                    android:text="Description: "
+                                    android:textColor="@color/black"
+                                    android:textSize="18sp" />
+
+                                <EditText
+                                    android:id="@+id/decription"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:ems="10"
+                                    android:inputType="textMultiLine" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:background="@drawable/edit_join"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/textView5"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_margin="2dp"
+                                    android:layout_weight="0"
+                                    android:gravity="center_vertical"
+                                    android:paddingLeft="4dp"
+                                    android:text="Duration (second): "
+                                    android:textColor="@color/black"
+                                    android:textSize="18sp" />
+
+                                <EditText
+                                    android:id="@+id/duration"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="50dp"
+                                    android:ems="10"
+                                    android:inputType="time"
+                                    android:paddingLeft="4dp"
+                                    android:textSize="18sp" />
+                            </LinearLayout>
 
                             <Switch
                                 android:id="@+id/status"
@@ -172,7 +221,19 @@
                     android:background="@drawable/bottom_create"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" >
+
+                    <ImageView
+                        android:visibility="gone"
+                        android:id="@+id/btn_qrCode"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="16dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/qr_code_icon" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -214,10 +275,9 @@
                                 android:background="@drawable/edit_join"
                                 android:ems="10"
                                 android:gravity="top"
-                                android:padding="10dp"
                                 android:hint="Type a Question"
-                                android:inputType="textMultiLine" />
-
+                                android:inputType="textMultiLine"
+                                android:padding="10dp" />
 
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
@@ -242,7 +302,6 @@
                         app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/linearLayout2"
@@ -328,8 +387,8 @@
         android:background="@drawable/button_cancel"
         android:text="Cancel"
         android:textAllCaps="false"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/save_button"
-        android:textColor="@color/white"/>
+        app:layout_constraintEnd_toStartOf="@+id/save_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

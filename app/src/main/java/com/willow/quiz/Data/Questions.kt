@@ -99,7 +99,7 @@ class Questions(context: Context) :
             }
         } finally {
             cursor?.close()
-//            db.close()
+            db.close()
         }
         return questionList
     }
@@ -121,6 +121,7 @@ class Questions(context: Context) :
             }
         }
         return answersList
+
     }
 
     @SuppressLint("Range")
@@ -175,6 +176,23 @@ class Questions(context: Context) :
         }
         return lastQuestionId
     }
+    fun deleteQuestionById(questionId: Int) {
+        val db = this.writableDatabase
+        try {
+            db.beginTransaction()
+
+            db.delete(TABLE_ANSWERS, "$KEY_ID = ?", arrayOf(questionId.toString()))
+
+            db.delete(TABLE_QUESTIONS, "$KEY_ID = ?", arrayOf(questionId.toString()))
+
+            db.setTransactionSuccessful()
+        } catch (e: Exception) {
+            Log.e(TAG, "deleteQuestionById: $e")
+        } finally {
+            db.endTransaction()
+            db.close()
+        }
+    }
 
     fun deleteAllDataFromTable() {
         val db = this.writableDatabase
@@ -183,6 +201,7 @@ class Questions(context: Context) :
             db.delete(TABLE_ANSWERS, null, null)
             db.delete(TABLE_QUESTIONS, null, null)
             db.setTransactionSuccessful()
+
         } catch (e: Exception) {
             Log.e(TAG, "deleteAllDataFromTable: $e", )
         } finally {

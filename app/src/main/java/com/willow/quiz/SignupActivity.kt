@@ -16,10 +16,14 @@ import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.willow.quiz.Data.SharedPrefManager
+import com.willow.quiz.Models.ErrorResponse
 import com.willow.quiz.Models.LoginResponse
 import com.willow.quiz.Sever.ApiClient
 import com.willow.quiz.Sever.ApiSevices
@@ -74,46 +78,40 @@ class SignupActivity : AppCompatActivity() {
         val password = binding.etpasswordSignUp.text.toString()
         val passwordConf = binding.etConfirmPassword.text.toString()
 
+        binding.progressBar3.visibility = View.VISIBLE
         ApiClient.getRetrofitInstance().create(ApiSevices::class.java)
             .create(email, name, password, passwordConf).enqueue(object : Callback<LoginResponse> {
                 override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                     if (response.isSuccessful) {
+                        binding.progressBar3.visibility = View.GONE
                         val data = response.body()
+                        SharedPrefManager.saveToken(
+                            this@SignupActivity, data?.token.toString()
+                        )
+                        customToast(this@SignupActivity,
+                            "Login successful!",
+                            Color.parseColor("#ACDBC9"),
+                            Color.parseColor("#33413C")
+                        )
+                        Log.e(TAG, data?.token.toString())
 
-                        if (data?.token == null) {
-                            customToast(this@SignupActivity,
-                                data?.message.toString(),
-                                Color.parseColor("#FDD2B5"),
-                                Color.parseColor("#322A24")
-                            )
-                        } else {
-                            val data = response.body()
-
-                            SharedPrefManager.saveToken(
-                                this@SignupActivity, data?.token.toString()
-                            )
-                            customToast(this@SignupActivity,
-                                "Login successful!",
-                                Color.parseColor("#ACDBC9"),
-                                Color.parseColor("#33413C")
-                            )
-                            Log.e(TAG, data?.token.toString())
-
-                            updateUI(this@SignupActivity, MeActivity::class.java)
-                        }
+                        updateUI(this@SignupActivity, MeActivity::class.java)
 
 
                     } else {
+                        binding.progressBar3.visibility = View.GONE
+                        val errorResponse = Gson().fromJson(response.errorBody()?.string(), ErrorResponse::class.java)
                         customToast(this@SignupActivity,
-                            "Sign up failed.",
+                            errorResponse.message,
                             Color.parseColor("#FDD2B5"),
                             Color.parseColor("#322A24")
                         )
-                        Log.e(TAG, response.body()?.message.toString())
+                        Log.e(TAG, errorResponse.message)
                     }
                 }
 
                 override fun onFailure(call: Call<LoginResponse>, throwable: Throwable) {
+                    binding.progressBar3.visibility = View.GONE
                     Log.e(TAG, "onFailure: $throwable")
                     Toast.makeText(this@SignupActivity, "An error occurred", Toast.LENGTH_SHORT)
                         .show()

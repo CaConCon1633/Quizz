@@ -146,6 +146,9 @@ class MeActivity : AppCompatActivity() {
         binding.txtExams.setOnClickListener {
             updateUI(this, ExamsActivity::class.java)
         }
+        binding.txtDashboard.setOnClickListener {
+            updateUI(this, DashBoardActivity::class.java)
+        }
         binding.txtLogout.setOnClickListener {
             SharedPrefManager.deleteToken(this)
             UserPreferences(this).deleteUserInfo()
