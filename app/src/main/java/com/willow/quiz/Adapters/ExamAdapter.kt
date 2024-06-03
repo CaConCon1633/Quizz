@@ -3,6 +3,7 @@ package com.willow.quiz.Adapters
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -25,7 +26,7 @@ class ExamAdapter(private var exams: List<Exam>, context: Context) :
     RecyclerView.Adapter<ExamAdapter.ExamViewHolder>() {
     class ExamViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title: TextView = itemView.findViewById(R.id.titleExam)
-        val description: TextView = itemView.findViewById(R.id.decriptionExam)
+        val editable: TextView = itemView.findViewById(R.id.editable)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExamAdapter.ExamViewHolder {
@@ -36,10 +37,11 @@ class ExamAdapter(private var exams: List<Exam>, context: Context) :
     override fun onBindViewHolder(holder: ExamAdapter.ExamViewHolder, position: Int) {
         val exam = exams[position]
         holder.title.text = exam.title
-        if (exam.description == null) {
-            holder.description.text = ""
+        if (exam.editable == true) {
+            holder.editable.text = ""
         } else {
-            holder.description.text = exam.description.toString()
+            holder.editable.text = "There were people join exam."
+            holder.editable.setTextColor(Color.RED)
         }
 
         holder.itemView.setOnClickListener {

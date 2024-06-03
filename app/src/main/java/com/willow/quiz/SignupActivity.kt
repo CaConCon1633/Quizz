@@ -42,6 +42,7 @@ class SignupActivity : AppCompatActivity() {
 
         binding.signUpButton.setOnClickListener {
 
+            val name = binding.editName.text.toString()
             val email = binding.emailSignUp.text.toString()
             val password = binding.etpasswordSignUp.text.toString()
 
@@ -104,7 +105,7 @@ class SignupActivity : AppCompatActivity() {
 
                     } else {
                         customToast(this@SignupActivity,
-                            "Login failed!",
+                            "Sign up failed.",
                             Color.parseColor("#FDD2B5"),
                             Color.parseColor("#322A24")
                         )
@@ -113,7 +114,9 @@ class SignupActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<LoginResponse>, throwable: Throwable) {
-                    Log.e(TAG, "onFailure: ${throwable.message}" )
+                    Log.e(TAG, "onFailure: $throwable")
+                    Toast.makeText(this@SignupActivity, "An error occurred", Toast.LENGTH_SHORT)
+                        .show()
                 }
 
             })

@@ -72,6 +72,7 @@ class ExamsActivity : AppCompatActivity() {
 
                 override fun onFailure(p0: Call<List<Exam>>, p1: Throwable) {
                     Log.e(ContentValues.TAG, "onFailure: $p1")
+                    binding.progressBar2.visibility = View.GONE
                     Toast.makeText(this@ExamsActivity, "An error occurred", Toast.LENGTH_SHORT)
                         .show()
                 }

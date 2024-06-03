@@ -41,19 +41,18 @@ class CreateExamActivity : AppCompatActivity() {
 
         this.db = Questions(this@CreateExamActivity)
 
-        binding.question.setOnClickListener {
-            binding.createExam.visibility = View.VISIBLE
-            binding.configExam.visibility = View.GONE
-        }
         binding.config.setOnClickListener {
             binding.createExam.visibility = View.GONE
             binding.configExam.visibility = View.VISIBLE
         }
         binding.cancelButton.setOnClickListener {
-            updateUI(this, MeActivity::class.java)
+            updateUI(this, ExamsActivity::class.java)
             db.deleteAllDataFromTable()
         }
 
+        binding.codeExam.setOnClickListener {
+            copyTextToClipboard(binding.codeExam.text.toString())
+        }
         configExam()
 
         var examId = intent.getStringExtra("examId").toString()
@@ -87,7 +86,7 @@ class CreateExamActivity : AppCompatActivity() {
         }
 
 
-        updateExam(examId)
+        updateExam()
 
         binding.saveButton.setOnClickListener {
 
@@ -108,13 +107,18 @@ class CreateExamActivity : AppCompatActivity() {
                     override fun onResponse(p0: Call<Exam>, p1: Response<Exam>) {
                         if (p1.isSuccessful){
                             Log.e(TAG, p1.body()?.shortId.toString() )
-                            Toast.makeText(this@CreateExamActivity, "Update successfull.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@CreateExamActivity, "Update successful.", Toast.LENGTH_SHORT).show()
                             if (p1.body()?.shortId != null){
                                 binding.codeExam.text = p1.body()?.shortId.toString()
+                            }else{
+                                binding.codeExam.text = "CODE EXAM"
                             }
                             binding.createExam.visibility = View.GONE
                             binding.configExam.visibility = View.VISIBLE
+                        }else{
+                            Toast.makeText(this@CreateExamActivity, "Update failed.", Toast.LENGTH_SHORT).show()
                         }
+
                     }
 
                     override fun onFailure(p0: Call<Exam>, p1: Throwable) {
@@ -129,7 +133,6 @@ class CreateExamActivity : AppCompatActivity() {
     }
 
     private fun configExam() {
-
         updateStatus(false)
         binding.status.setOnCheckedChangeListener { _, isChecked ->
             updateStatus(isChecked)
@@ -148,7 +151,18 @@ class CreateExamActivity : AppCompatActivity() {
                         db.deleteAllDataFromTable()
                         binding.progressBar.visibility = View.GONE
                         val data = p1.body()
-                        binding.title.setText(   data?.title )
+
+                        if (data?.editable == true){
+                            binding.question.setOnClickListener {
+                                binding.createExam.visibility = View.VISIBLE
+                                binding.configExam.visibility = View.GONE
+                            }
+                        }else{
+                            binding.duration.isEnabled = false
+                            binding.duration.setTextColor(getColor(R.color.grey))
+
+                        }
+                        binding.title.setText(data?.title )
                         if (data?.description != null) {
                             binding.decription.setText(data.description.toString())
                         }
@@ -179,16 +193,20 @@ class CreateExamActivity : AppCompatActivity() {
             })
     }
 
-    private fun updateExam(examId: String){
-        var userAnswers = mutableListOf<String>()
+    private fun updateExam(){
+
         db = Questions(this)
         db.getAllQuestions()
         var id = db.getFirstQuestionId()
 
 
-        userAnswers = db.getAnswersForQuestion(id).toMutableList()
-        var correct = db.getCorrectAnswerForQuestion(id)
-        binding.txtQuestion.setText(db.getQuestionById(id).toString())
+        var userAnswers = db.getAnswersForQuestion(1).toMutableList()
+        var correct = db.getCorrectAnswerForQuestion(1)
+        if (db.getQuestionById(1) == null){
+            binding.txtQuestion.setText("")
+        }else{
+            binding.txtQuestion.setText(db.getQuestionById(1).toString())
+        }
 
         choiceAdapter = ChoiceAdapter(userAnswers,correct , this)
         binding.recyclerView.layoutManager =
@@ -196,11 +214,15 @@ class CreateExamActivity : AppCompatActivity() {
         binding.recyclerView.adapter = choiceAdapter
 
         binding.btnNext.setOnClickListener{
-            if (id < db.getLastQuestionId()){
+            if (id <= db.getLastQuestionId()){
                 id++
                 userAnswers = db.getAnswersForQuestion(id).toMutableList()
                 correct = db.getCorrectAnswerForQuestion(id)
-                binding.txtQuestion.setText(db.getQuestionById(id).toString())
+                if (db.getQuestionById(id) == null){
+                    binding.txtQuestion.setText("")
+                }else{
+                    binding.txtQuestion.setText(db.getQuestionById(id).toString())
+                }
 
                 choiceAdapter = ChoiceAdapter(userAnswers,correct , this)
                 binding.recyclerView.layoutManager =
@@ -224,7 +246,7 @@ class CreateExamActivity : AppCompatActivity() {
         }
 
         binding.addChoice.setOnClickListener {
-            var newAnswer = "Option"
+            var newAnswer = ""
             userAnswers.add(newAnswer)
             choiceAdapter = ChoiceAdapter(userAnswers,correct , this)
             binding.recyclerView.layoutManager =

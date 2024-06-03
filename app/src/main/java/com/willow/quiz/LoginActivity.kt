@@ -79,13 +79,14 @@ class LoginActivity : AppCompatActivity() {
 
     private fun login(email: String, password: String) {
         val userPrefs = UserPreferences(this)
-
+        showProgressBar()
         ApiClient.getRetrofitInstance().create(ApiSevices::class.java).login(email, password)
             .enqueue(object : Callback<LoginResponse> {
                 override fun onResponse(
                     call: Call<LoginResponse>, response: Response<LoginResponse>
                 ) {
                     if (response.isSuccessful) {
+                        hideProgressBar()
                         val data = response.body()
 
                         if (data?.token == null) {
@@ -119,6 +120,7 @@ class LoginActivity : AppCompatActivity() {
 
 
                     } else {
+                        hideProgressBar()
                         customToast(this@LoginActivity,
                             "Login failed!",
                             Color.parseColor("#FDD2B5"),
@@ -129,6 +131,7 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                    hideProgressBar()
                     Toast.makeText(this@LoginActivity, t.message, Toast.LENGTH_LONG).show()
                     Log.e(TAG, "onFailure: ${t.message}")
                 }

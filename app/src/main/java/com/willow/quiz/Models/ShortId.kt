@@ -3,6 +3,8 @@ package com.willow.quiz.Models
 import com.google.gson.annotations.SerializedName
 
 data class ShortId(
+    @SerializedName("editable")
+    val editable: Boolean?,
     @SerializedName("created_at")
     val createdAt: String?,
     @SerializedName("description")

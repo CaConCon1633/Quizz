@@ -32,6 +32,7 @@ import retrofit2.Response
 @Suppress("DEPRECATION")
 class MeActivity : AppCompatActivity() {
 
+
     private lateinit var binding: ActivityMeBinding
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranter: Boolean ->
