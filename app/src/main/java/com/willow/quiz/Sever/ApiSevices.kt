@@ -6,6 +6,7 @@ import com.willow.quiz.Models.Exam
 import com.willow.quiz.Models.JoinExam
 import com.willow.quiz.Models.LoginResponse
 import com.willow.quiz.Models.Message
+import com.willow.quiz.Models.Report
 import com.willow.quiz.Models.ResultExam
 import com.willow.quiz.Models.ShortId
 import com.willow.quiz.Models.UpdateExam
@@ -145,5 +146,5 @@ interface ApiSevices {
     @GET("exams/dashboard")
     fun getDashBoard(
         @Header("Authorization") token: String
-    ):Call<Dashboard>
+    ):Call<Report>
 }

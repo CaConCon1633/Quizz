@@ -9,7 +9,6 @@ import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Paint
 import android.os.Bundle
@@ -21,8 +20,6 @@ import android.view.Window
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.google.zxing.BarcodeFormat
@@ -36,7 +33,6 @@ import com.willow.quiz.Models.UpdateExam
 import com.willow.quiz.Sever.ApiClient
 import com.willow.quiz.Sever.ApiSevices
 import com.willow.quiz.databinding.ActivityCreateExamBinding
-import com.willow.quiz.databinding.InforExamLayoutBinding
 import com.willow.quiz.databinding.QrCodeLayoutBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -73,7 +69,6 @@ class CreateExamActivity : AppCompatActivity() {
         configExam()
 
         var examId = intent.getStringExtra("examId").toString()
-
 
 
         if (examId == "null") {

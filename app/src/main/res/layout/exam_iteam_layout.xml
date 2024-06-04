@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="10dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_margin="3dp"
+    app:cardElevation="3dp"
+    app:contentPadding="1dp"
+    app:cardBackgroundColor="#E6E6E6">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/shortId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/shortId1"
+                android:text="ShortId: "
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:layout_marginStart="4dp"
+                android:textSize="18sp"
+                android:layout_weight="0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/txtShortId"
+                android:text="CODE EXAM"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:layout_marginStart="4dp"
+                android:textSize="18sp"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/title1"
+                android:text="Title: "
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:layout_marginStart="4dp"
+                android:textSize="18sp"
+                android:layout_weight="0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/txtTitle"
+                android:text="test1"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:layout_marginStart="4dp"
+                android:textSize="18sp"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/number1"
+                android:text="Attendance: "
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:layout_marginStart="4dp"
+                android:textSize="18sp"
+                android:layout_weight="0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/txtNumber"
+                android:text="3"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:layout_marginStart="4dp"
+                android:textSize="18sp"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/numberJoinExam"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/number2"
+                android:text="Over 5 points: "
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:layout_marginStart="4dp"
+                android:textSize="18sp"
+                android:layout_weight="0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/txtJoinExam"
+                android:text="3"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:layout_marginStart="4dp"
+                android:textSize="18sp"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
